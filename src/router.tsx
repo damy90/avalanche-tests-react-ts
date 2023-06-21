@@ -1,6 +1,4 @@
 import { createBrowserRouter, Outlet } from "react-router-dom"
-import { AuthProvider } from "./context/AuthContext"
-import { TestsListProvider } from "./context/TestsListContext"
 import Home from "./pages/Home"
 import { RootLayout } from "./pages/layouts/RootLayout"
 import Login from "./pages/LoginForm"
@@ -10,41 +8,15 @@ import MyReports from "./pages/MyReports"
 
 export const router = createBrowserRouter([
     {
-        element: <AuthContextWrapper />,
+        path: "/",
+        element: <RootLayout />,
         children: [
-            {
-                path: "/",
-                element: <RootLayout />,
-                children: [
-                    {
-                        element: <TestsListContextWrapper />,
-                        children: [
-                            { element: <Home />, index: true },
-                            { path: "submit-report", element: <SubmitReport /> },
-                            { path: "my-reports", element: <MyReports /> },
-                            { path: 'report/:id/edit', element: <SubmitReport/>}
-                        ]
-                    },
-                    { path: "login", element: <Login /> },
-                    { path: "signup", element: <Register /> }
-                ],
-            }
+            { element: <Home />, index: true },
+            { path: "submit-report", element: <SubmitReport /> },
+            { path: "my-reports", element: <MyReports /> },
+            { path: 'report/:id/edit', element: <SubmitReport/>},
+            { path: "login", element: <Login /> },
+            { path: "signup", element: <Register /> }
         ],
     },
 ])
-
-function AuthContextWrapper() {
-    return (
-        <AuthProvider>
-            <Outlet />
-        </AuthProvider>
-    )
-}
-
-function TestsListContextWrapper() {
-    return (
-        <TestsListProvider>
-            <Outlet />
-        </TestsListProvider>
-    )
-}

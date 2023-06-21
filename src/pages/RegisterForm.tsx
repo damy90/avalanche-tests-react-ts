@@ -2,13 +2,17 @@ import { Navigate } from "react-router-dom"
 import { StyledButton } from "../styles/common/Button.styled"
 import { StyledForm } from "../styles/common/Form.styled"
 import { StyledInput } from "../styles/common/Input.styled"
-import { useAuth } from "../hooks/useAuth"
+//import { useAuth } from "../hooks/useAuth"
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
+import { useRegisterUserMutation } from "../redux/features/auth/authApiSlice"
+import { useAppSelector } from "../redux/hooks"
 
 function Register() {
-    const { signup, userHasRole } = useAuth()
+    //const { signup, userHasRole } = useAuth()
+    const [registerUser, { isLoading, isError, error, isSuccess }] = useRegisterUserMutation();
+    const roles =  useAppSelector((state) => state.auth.roles);
     const formSchema = Yup.object().shape({
         email: Yup.string()
             .required('User name is mandatory')
@@ -24,15 +28,15 @@ function Register() {
     const { register, handleSubmit, formState } = useForm(formOptions)
     const { errors } = formState
 
-    if (userHasRole('Registered')) return <Navigate to="/" />
+    if(roles?.includes('Registered')) return <Navigate to="/"/>
 
     const onSubmit = handleSubmit((data) => {
-        if (signup.isLoading) return
+        if (isLoading) return
 
         const username = data.email
         const password = data.password
 
-        signup.mutate({ username, password })
+        registerUser({ email:username, password })
 
         return false;
     })

@@ -1,8 +1,13 @@
 import { NavLink } from "react-router-dom";
-import { useTestsList } from "../hooks/useTestsList.js";
+import { useAppSelector } from "../redux/hooks";
+import { useFetchTestsQuery } from "../redux/features/tests-api-slice";
+import {TestDetails} from '../types/reports';
+//import { useTestsList } from "../hooks/useTestsList.js";
 
 function MyReports(){
-    const { tests } = useTestsList()
+    //const { tests } = useTestsList()
+    const token = useAppSelector((state) => state.auth.token);
+    const { data = [], isFetching } = useFetchTestsQuery(token)
 
     return (
         <>
@@ -19,7 +24,7 @@ function MyReports(){
                     </tr>
                 </thead>
                 <tbody>
-                    <Data tests={tests}></Data>
+                    <Data tests={data}></Data>
                 </tbody>
             </table>
         </>
@@ -27,7 +32,7 @@ function MyReports(){
 }
 
 function Data({tests}) {
-    return tests.map(test => {
+    return tests.map((test:TestDetails) => {
         return (
             <tr key={test._id}>
                 <td>{test.place}</td>

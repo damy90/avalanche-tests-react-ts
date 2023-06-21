@@ -1,17 +1,22 @@
 import L, { LatLng } from "leaflet";
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import {StyledMap} from '../styles/common/Map.styled.jsx';
 import { useTestsList } from "../hooks/useTestsList.js";
 import getDangerMarker from "../../utils/custom-marker.js";
-import { MapProps, TestsListContext } from "../types/reports.js";
+import { MapProps } from "../types/reports.js";
+import { useAuth } from "../hooks/useAuth.js";
+import { useFetchTestsQuery } from "../redux/features/tests-api-slice.js";
+import { useAppSelector } from "../redux/hooks.js";
+//import { useLoginMutation } from "../redux/features/auth/authApiSlice.js";
 
 let map: L.Map;
  
 function Map(props:MapProps) {
     const {className, setMyPosition} = {...props};
-    const { tests } = useTestsList()
+    const token = useAppSelector((state) => state.auth.token);
     const mapRef = useRef<HTMLDivElement>(null);
     const marker: L.Marker = L.marker({lat:0, lng:0}, { draggable: true });
+    const { data = [], isFetching } = useFetchTestsQuery(token)
 
     useEffect(()=> {
         function handleLocationFound(ev: { latlng: LatLng }) {
@@ -52,14 +57,21 @@ function Map(props:MapProps) {
     }, [])
     useEffect(()=>{
         const markers = [];
-        for(const test of tests) {
-            const pos:L.LatLng = new L.LatLng(test.lat, test.lon);
+        for(const test of data) {
+            let pos:L.LatLng;
+            try {
+                pos = new L.LatLng(test.lat, test.lon);
+            } catch (e) {
+                console.error('invalid position')
+                continue;
+            }
+            
             const testMarker = getDangerMarker(test.dangerLevel, pos);
             testMarker.addTo(map)
             markers.push(testMarker)
             // TEST
             marker.setLatLng(pos)
-        }}, [tests])
+        }}, [data])
     return (
         <StyledMap ref={mapRef} className={className}/>
     ) 

@@ -1,4 +1,4 @@
-export const getAuthHeaders = (type: string, authToken?: string)=> {
+export const getAuthHeaders = (type: string, authToken?: string | null)=> {
     const authHeader:string = type === 'basic'
     ?  'Basic ' + btoa(import.meta.env.VITE_APP_KEY + ':' + import.meta.env.VITE_APP_SECRET)
     :  'Kinvey ' + authToken;
@@ -6,7 +6,7 @@ export const getAuthHeaders = (type: string, authToken?: string)=> {
     return {
         headers: {
             'Authorization': authHeader,
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+            //"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
     }
 }

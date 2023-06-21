@@ -2,19 +2,20 @@ import { UseMutationResult } from "@tanstack/react-query"
 import { AxiosResponse } from "axios"
 import { ReactNode } from "react"
 
-export type AuthContext = {
-    user?: string
-    token?: string
-    signup: UseMutationResult<object, unknown, User>
-    login: UseMutationResult<object, unknown, User>
-    logout: UseMutationResult<AxiosResponse, unknown, void>
-    userHasRole(roleName:string) :  boolean;
-}
+// export type AuthContext = {
+//     user?: string
+//     token?: string
+//     signup: UseMutationResult<object, unknown, User>
+//     login: UseMutationResult<object, unknown, User>
+//     logout: UseMutationResult<AxiosResponse, unknown, void>
+//     userHasRole(roleName:string) :  boolean;
+// }
 
 export type User = {
     username: string
     password: string,
-    roles?: string[]
+    roles?: string[],
+    token?: string
 }
 
 export type AuthProviderProps = {

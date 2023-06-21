@@ -10,10 +10,15 @@ import Map from '../common/Map';
 import { useState } from "react"
 import { useTestsList } from "../hooks/useTestsList"
 import { TestDetails } from "../types/reports"
+import { useAppSelector } from "../redux/hooks"
+import { usePostTestMutation } from "../redux/features/tests-api-slice"
 
 function SubmitReport() {
-    const { userHasRole } = useAuth()
-    const { postTest} = useTestsList();
+    //const { userHasRole } = useAuth()
+    //const { postTest} = useTestsList();
+    const token = useAppSelector((state) => state.auth.token);
+    const [ postTest, { isLoading, isError, error, isSuccess } ] = usePostTestMutation()
+    const roles =  useAppSelector((state) => state.auth.roles);
     const [myPos, setMyPosition] = useState({lng:0, lat:0});
     const navigate = useNavigate();
 
@@ -28,17 +33,20 @@ function SubmitReport() {
     const { register, handleSubmit, reset, formState } = useForm(formOptions)
     const { errors } = formState
 
-    if (!userHasRole('Registered')) return <Navigate to="/" />
+    if(!roles?.includes('Registered')) return <Navigate to="/"/>
 
     const onSubmit = handleSubmit((data) => {
-        // if (signup.isLoading) return
+        if (isLoading) return
 
         const testData = {
             ...data,
             lat: myPos.lat,
             lon: myPos.lng
         } as TestDetails
-        postTest.mutate(testData)
+        if(token) {
+            postTest({payload: testData, token: token})
+        }
+        
         navigate("/", { replace: true });
 
         return false;

@@ -11,11 +11,11 @@ import { UseMutationResult } from "@tanstack/react-query"
 //     "_kmd": { "lmt": "2023-05-26T14:23:28.965Z", "ect": "2023-05-26T14:23:28.965Z" }
 // }
 
-export type TestsListContext = {
-    postTest: UseMutationResult<TestDetails, unknown, TestDetails, unknown>,
-    getTests: UseMutationResult<TestDetails[], unknown, void, unknown>,
-    tests: TestDetails[]
-}
+// export type TestsListContext = {
+//     postTest: UseMutationResult<TestDetails, unknown, TestDetails, unknown>,
+//     getTests: UseMutationResult<TestDetails[], unknown, void, unknown>,
+//     tests: TestDetails[]
+// }
 
 export type TestDetails = {
     lat: number,
