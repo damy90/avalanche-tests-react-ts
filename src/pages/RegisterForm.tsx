@@ -6,12 +6,12 @@ import { StyledInput } from "../styles/common/Input.styled"
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
-import { useRegisterUserMutation } from "../redux/features/auth/authApiSlice"
+//import { useRegisterUserMutation } from "../redux/features/auth/authApiSlice"
 import { useAppSelector } from "../redux/hooks"
 
 function Register() {
     //const { signup, userHasRole } = useAuth()
-    const [registerUser, { isLoading, isError, error, isSuccess }] = useRegisterUserMutation();
+    //const [registerUser, { isLoading, isError, error, isSuccess }] = useRegisterUserMutation();
     const roles =  useAppSelector((state) => state.auth.roles);
     const formSchema = Yup.object().shape({
         email: Yup.string()
@@ -31,12 +31,12 @@ function Register() {
     if(roles?.includes('Registered')) return <Navigate to="/"/>
 
     const onSubmit = handleSubmit((data) => {
-        if (isLoading) return
+        //if (isLoading) return
 
         const username = data.email
         const password = data.password
 
-        registerUser({ email:username, password })
+        //registerUser({ email:username, password })
 
         return false;
     })

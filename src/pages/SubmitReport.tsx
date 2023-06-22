@@ -11,13 +11,13 @@ import { useState } from "react"
 import { useTestsList } from "../hooks/useTestsList"
 import { TestDetails } from "../types/reports"
 import { useAppSelector } from "../redux/hooks"
-import { usePostTestMutation } from "../redux/features/tests-api-slice"
+//import { usePostTestMutation } from "../redux/features/tests-api-slice"
 
 function SubmitReport() {
     //const { userHasRole } = useAuth()
     //const { postTest} = useTestsList();
     const token = useAppSelector((state) => state.auth.token);
-    const [ postTest, { isLoading, isError, error, isSuccess } ] = usePostTestMutation()
+    //const [ postTest, { isLoading, isError, error, isSuccess } ] = usePostTestMutation()
     const roles =  useAppSelector((state) => state.auth.roles);
     const [myPos, setMyPosition] = useState({lng:0, lat:0});
     const navigate = useNavigate();
@@ -36,7 +36,7 @@ function SubmitReport() {
     if(!roles?.includes('Registered')) return <Navigate to="/"/>
 
     const onSubmit = handleSubmit((data) => {
-        if (isLoading) return
+        //if (isLoading) return
 
         const testData = {
             ...data,
@@ -44,7 +44,7 @@ function SubmitReport() {
             lon: myPos.lng
         } as TestDetails
         if(token) {
-            postTest({payload: testData, token: token})
+            //postTest({payload: testData, token: token})
         }
         
         navigate("/", { replace: true });

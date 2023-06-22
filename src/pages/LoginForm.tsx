@@ -3,14 +3,14 @@ import { StyledForm } from "../styles/common/Form.styled"
 import { FormEvent, useRef } from "react"
 import { Navigate } from "react-router-dom"
 import { StyledInput } from "../styles/common/Input.styled"
-import { useLoginUserMutation } from "../redux/features/auth/authApiSlice"
+//import { useLoginUserMutation } from "../redux/features/auth/authApiSlice"
 import { useAppSelector } from "../redux/hooks"
 
 function Login() {
     //const { login, userHasRole } = useAuth()
     const usernameRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null)
-    const [loginUser, { isLoading, isError, error, isSuccess }] = useLoginUserMutation();
+    //const [loginUser, { isLoading, isError, error, isSuccess }] = useLoginUserMutation();
     const roles =  useAppSelector((state) => state.auth.roles);
 
     //if (userHasRole('Registered')) return <Navigate to="/" />
@@ -20,7 +20,7 @@ function Login() {
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault()
-        if (isLoading) return
+        //if (isLoading) return
 
         const username = usernameRef.current?.value
         const password = passwordRef.current?.value
@@ -28,7 +28,7 @@ function Login() {
             return
         }
 
-        loginUser({username, password});
+        //loginUser({username, password});
     }
     return (
         <StyledForm method="post" onSubmit={handleSubmit}>

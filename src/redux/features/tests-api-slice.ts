@@ -1,35 +1,47 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { TestDetails } from '../../types/reports';
-import { getAuthHeaders } from '../../../utils/auth-headers';
+import axios from "axios"
+import { getAuthHeaders } from "../../../utils/auth-headers"
 
-export const testsApiSlice = createApi({
-    reducerPath: 'testsApi',
-    tagTypes: ['Tests'],
-    baseQuery: fetchBaseQuery({
-        baseUrl: `${import.meta.env.VITE_SERVER_URL}/appdata/${import.meta.env.VITE_APP_KEY}`,
-    }),
-    endpoints(builder) {
+
+const initialState = {
+    tests: []
+}
+
+export default function authReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'tests/getTestsResponse': {
+        const data = action.payload.data
         return {
-            fetchTests: builder.query<TestDetails[], string | null>({
-                query(token) {
-                    return {
-                        url: `/avalanche-tests/`,
-                        headers: getAuthHeaders('kinvey', token).headers,
-                    };
-                },
-            },),
-            postTest: builder.mutation<TestDetails,{payload:Partial<TestDetails>, token:string}>({
-                query: ({payload, token}) => ({
-                    url: `/avalanche-tests/`,
-                    method: 'POST',
-                    body: payload,
-                    headers: getAuthHeaders('kinvey', token).headers,
-                    credentials: 'include',
-                }),
-                invalidatesTags: [{ type: 'Tests', id: 'LIST' }],
-            }),
-        };
-    },
-});
+            ...state,
+            tests: data
+        }
+    }
+    case 'tests/postTestResponse': {
+        const data = action.payload.data
+        return {
+            ...state,
+            tests: [...state.tests, data]
+        }
+    }
+    default:
+      return state
+  }
+}
 
-export const { useFetchTestsQuery, usePostTestMutation } = testsApiSlice;
+const testsUrl = `${import.meta.env.VITE_SERVER_URL}/appdata/${import.meta.env.VITE_APP_KEY}/avalanche-tests/`;
+// Thunk function
+export async function getTests(dispatch, getState) {
+    const token = getState().auth.token
+    const headers = getAuthHeaders("kinvey", token)
+    const response = await axios.get(testsUrl, headers)
+    dispatch({ type: 'tests/getTestsResponse', payload: response })
+}
+
+export function postTest(test) {
+    
+    return async function postTestThunk(dispatch, getState) {
+        const token = getState().userData.token
+        const headers = getAuthHeaders("kinvey", token)
+        const response = await axios.post(testsUrl, test, headers)
+        dispatch({ type: 'tests/postTestResponse', payload: response })
+    }
+}

@@ -1,18 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { testsApiSlice } from './features/tests-api-slice';
-import authReducer from './features/auth/authSlice'
-import { authApi } from './features/auth/authApiSlice';
 
-export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    [authApi.reducerPath]: authApi.reducer,
-    [testsApiSlice.reducerPath]: testsApiSlice.reducer,
-  },
-  middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(testsApiSlice.middleware).concat(authApi.middleware);
-  },
-});
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+import { createStore, applyMiddleware } from 'redux'
+import thunkMiddleware from 'redux-thunk'
+import { composeWithDevTools } from 'redux-devtools-extension'
+import rootReducer from './reducer'
+
+const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware))
+
+// The store now has the ability to accept thunk functions in `dispatch`
+export const store = createStore(rootReducer, composedEnhancer)
+export default store

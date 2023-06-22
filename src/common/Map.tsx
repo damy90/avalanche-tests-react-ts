@@ -5,8 +5,10 @@ import { useTestsList } from "../hooks/useTestsList.js";
 import getDangerMarker from "../../utils/custom-marker.js";
 import { MapProps } from "../types/reports.js";
 import { useAuth } from "../hooks/useAuth.js";
-import { useFetchTestsQuery } from "../redux/features/tests-api-slice.js";
-import { useAppSelector } from "../redux/hooks.js";
+//import { useFetchTestsQuery } from "../redux/features/tests-api-slice.js";
+import { useAppDispatch, useAppSelector } from "../redux/hooks.js";
+import { useDispatch } from 'react-redux'
+import { getTests } from "../redux/features/tests-api-slice.js";
 //import { useLoginMutation } from "../redux/features/auth/authApiSlice.js";
 
 let map: L.Map;
@@ -16,7 +18,9 @@ function Map(props:MapProps) {
     const token = useAppSelector((state) => state.auth.token);
     const mapRef = useRef<HTMLDivElement>(null);
     const marker: L.Marker = L.marker({lat:0, lng:0}, { draggable: true });
-    const { data = [], isFetching } = useFetchTestsQuery(token)
+    const dispatch = useDispatch()
+    dispatch(getTests)
+    const data = useAppSelector((state) => state.tests.tests)
 
     useEffect(()=> {
         function handleLocationFound(ev: { latlng: LatLng }) {
