@@ -11,11 +11,14 @@ import { useState } from "react"
 import { useTestsList } from "../hooks/useTestsList"
 import { TestDetails } from "../types/reports"
 import { useAppSelector } from "../redux/hooks"
+import { useDispatch } from "react-redux"
+import { postTest } from "../redux/features/tests-api-slice.js";
 //import { usePostTestMutation } from "../redux/features/tests-api-slice"
 
 function SubmitReport() {
     //const { userHasRole } = useAuth()
     //const { postTest} = useTestsList();
+    const dispatch = useDispatch()
     const token = useAppSelector((state) => state.auth.token);
     //const [ postTest, { isLoading, isError, error, isSuccess } ] = usePostTestMutation()
     const roles =  useAppSelector((state) => state.auth.roles);
@@ -45,6 +48,7 @@ function SubmitReport() {
         } as TestDetails
         if(token) {
             //postTest({payload: testData, token: token})
+            dispatch(postTest(data))
         }
         
         navigate("/", { replace: true });

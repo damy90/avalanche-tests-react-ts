@@ -5,6 +5,8 @@ import { Navigate } from "react-router-dom"
 import { StyledInput } from "../styles/common/Input.styled"
 //import { useLoginUserMutation } from "../redux/features/auth/authApiSlice"
 import { useAppSelector } from "../redux/hooks"
+import { useDispatch } from "react-redux"
+import { login } from "../redux/features/auth/authApiSlice"
 
 function Login() {
     //const { login, userHasRole } = useAuth()
@@ -12,6 +14,7 @@ function Login() {
     const passwordRef = useRef<HTMLInputElement>(null)
     //const [loginUser, { isLoading, isError, error, isSuccess }] = useLoginUserMutation();
     const roles =  useAppSelector((state) => state.auth.roles);
+    const dispatch = useDispatch()
 
     //if (userHasRole('Registered')) return <Navigate to="/" />
     
@@ -29,6 +32,7 @@ function Login() {
         }
 
         //loginUser({username, password});
+        dispatch(login({username, password}))
     }
     return (
         <StyledForm method="post" onSubmit={handleSubmit}>

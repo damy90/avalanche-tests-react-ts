@@ -8,8 +8,11 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 //import { useRegisterUserMutation } from "../redux/features/auth/authApiSlice"
 import { useAppSelector } from "../redux/hooks"
+import { useDispatch } from "react-redux"
+import { signup } from "../redux/features/auth/authApiSlice"
 
 function Register() {
+    const dispatch = useDispatch()
     //const { signup, userHasRole } = useAuth()
     //const [registerUser, { isLoading, isError, error, isSuccess }] = useRegisterUserMutation();
     const roles =  useAppSelector((state) => state.auth.roles);
@@ -37,6 +40,7 @@ function Register() {
         const password = data.password
 
         //registerUser({ email:username, password })
+        dispatch(signup({username, password}))
 
         return false;
     })
