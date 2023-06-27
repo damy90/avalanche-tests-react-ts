@@ -4,11 +4,11 @@ import { getAuthHeaders } from "../../../../utils/auth-headers"
 
 const ROLES = [
     {
-        id: 'f86b1061-de69-4c36-871f-31932b0ad239',
+        id: '649a785eaf82bd237c1f8a31',
         name: 'Admin',
         paths: []
     }, {
-        id: 'ed7aedf9-2941-458b-9460-d9ecdaefe4da',
+        id: '649a785eaf82bd237c1f8a30',
         name: 'Registered',
         paths: ['/submit-report']
     }
@@ -27,18 +27,21 @@ export default function authReducer(state = initialState, action) {
         return {
             ...state,
             user: data.username,
-            token: data._kmd.authtoken
-        }
-    }
-    case 'auth/getMeResponse': {
-        const data = action.payload.data
-        return {
-            ...state,
-            roles: data._kmd.roles.map((role: Role) => {
-                return ROLES.find((r) => role.roleId === r.id)?.name
+            token: data.token,
+            roles: data.roles.map((role: string) => {
+                return ROLES.find((r) => role === r.id)?.name
             })
         }
     }
+    // case 'auth/getMeResponse': {
+    //     const data = action.payload.data
+    //     return {
+    //         ...state,
+    //         roles: data._kmd.roles.map((role: string) => {
+    //             return ROLES.find((r) => role === r.id)?.name
+    //         })
+    //     }
+    // }
     case 'auth/logoutResponse': {
         return {
             ...initialState
@@ -49,26 +52,26 @@ export default function authReducer(state = initialState, action) {
   }
 }
 
-const authUrl = `${import.meta.env.VITE_SERVER_URL}/user/${import.meta.env.VITE_APP_KEY}`;
+const authUrl = `${import.meta.env.VITE_SERVER_URL}/api/auth`;
 // Thunk function
 export function signup(user: User) {
     return async function signupThunk(dispatch, getState) {
-        const response = await axios.post(authUrl, user, basicAuth)
+        const response = await axios.post(`${authUrl}/signup`, user)
         dispatch({ type: 'auth/signupResponse', payload: response })
     }
 }
 
-export function getMe(token:string) {
-    const headers = getAuthHeaders("kinvey", token)
-    return async function getMeThunk(dispatch, getState) {
-        const response = await axios.get(`${authUrl}/_me`, headers)
-        dispatch({ type: 'auth/getMeResponse', payload: response })
-    }
-}
+// export function getMe(token:string) {
+//     const headers = getAuthHeaders("kinvey", token)
+//     return async function getMeThunk(dispatch, getState) {
+//         const response = await axios.get(`${authUrl}/_me`, headers)
+//         dispatch({ type: 'auth/getMeResponse', payload: response })
+//     }
+// }
 
 export function login(user: User) {
     return async function loginThunk(dispatch, getState) {
-        const response = await axios.post(`${authUrl}/login`, user, basicAuth)
+        const response = await axios.post(`${authUrl}/login`, user)
         dispatch({ type: 'auth/loginResponse', payload: response })
     }
 }

@@ -7,7 +7,7 @@ function Home() {
     const user = useAppSelector((state) => state.auth.user);
     return (
         <>
-            {user? <Map setMyPosition={setMyPosition}/> : <h1>Loading</h1>}
+            <Map setMyPosition={setMyPosition}/>
         </>
     )
 }

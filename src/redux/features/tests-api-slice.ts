@@ -6,14 +6,17 @@ const initialState = {
     tests: []
 }
 
-export default function authReducer(state = initialState, action) {
+export default function testsReducer(state = initialState, action) {
   switch (action.type) {
     case 'tests/getTestsResponse': {
         const data = action.payload.data
-        return {
-            ...state,
-            tests: data
+        if(data) {
+            return {
+                ...state,
+                tests: data
+            }
         }
+        return {...state}
     }
     case 'tests/postTestResponse': {
         const data = action.payload.data
@@ -27,19 +30,19 @@ export default function authReducer(state = initialState, action) {
   }
 }
 
-const testsUrl = `${import.meta.env.VITE_SERVER_URL}/appdata/${import.meta.env.VITE_APP_KEY}/avalanche-tests/`;
+const testsUrl = `${import.meta.env.VITE_SERVER_URL}/api/tests/`;
 // Thunk function
 export async function getTests(dispatch, getState) {
-    const token = getState().auth.token
-    const headers = getAuthHeaders("kinvey", token)
-    const response = await axios.get(testsUrl, headers)
+    //const token = getState().auth.token
+    //const headers = getAuthHeaders("kinvey", token)
+    const response = await axios.get(testsUrl)
     dispatch({ type: 'tests/getTestsResponse', payload: response })
 }
 
 export function postTest(test) {
     
     return async function postTestThunk(dispatch, getState) {
-        const token = getState().userData.token
+        const token = getState().auth.token
         const headers = getAuthHeaders("kinvey", token)
         const response = await axios.post(testsUrl, test, headers)
         dispatch({ type: 'tests/postTestResponse', payload: response })

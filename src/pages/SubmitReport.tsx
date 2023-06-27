@@ -48,7 +48,7 @@ function SubmitReport() {
         } as TestDetails
         if(token) {
             //postTest({payload: testData, token: token})
-            dispatch(postTest(data))
+            dispatch(postTest(testData))
         }
         
         navigate("/", { replace: true });

@@ -19,10 +19,10 @@ function Map(props:MapProps) {
     const mapRef = useRef<HTMLDivElement>(null);
     const marker: L.Marker = L.marker({lat:0, lng:0}, { draggable: true });
     const dispatch = useDispatch()
-    dispatch(getTests)
     const data = useAppSelector((state) => state.tests.tests)
 
     useEffect(()=> {
+        dispatch(getTests)
         function handleLocationFound(ev: { latlng: LatLng }) {
             marker.setLatLng(ev.latlng);
             if(setMyPosition) {

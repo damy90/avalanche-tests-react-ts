@@ -16,15 +16,11 @@ export function RootLayout() {
     // TODO: check if logged in
     
     if(!user) {
-      // login.mutate({
+
+      // dispatch(login({
       //   username: 'Anonymous',
       //   password: 'anonymous'
-      // })
-
-      dispatch(login({
-        username: 'Anonymous',
-        password: 'anonymous'
-      }))
+      // }))
       
     }
     
