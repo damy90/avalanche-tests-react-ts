@@ -1,23 +1,20 @@
 import axios from "axios"
-import { Role, User } from "../../../types/authorization"
+import { User } from "../../../types/authorization"
 import { getAuthHeaders } from "../../../../utils/auth-headers"
 
 const ROLES = [
     {
-        id: '649a785eaf82bd237c1f8a31',
+        id: '649c0554c7abbe38a8b25ee2',
         name: 'Admin',
         paths: []
     }, {
-        id: '649a785eaf82bd237c1f8a30',
+        id: '649c0554c7abbe38a8b25ee1',
         name: 'Registered',
         paths: ['/submit-report']
     }
 ]
 
-const initialState = {
-}
-
-const basicAuth = getAuthHeaders('basic');
+const initialState = {}
 
 export default function authReducer(state = initialState, action) {
   switch (action.type) {
@@ -55,7 +52,7 @@ export default function authReducer(state = initialState, action) {
 const authUrl = `${import.meta.env.VITE_SERVER_URL}/api/auth`;
 // Thunk function
 export function signup(user: User) {
-    return async function signupThunk(dispatch, getState) {
+    return async function signupThunk(dispatch) {
         const response = await axios.post(`${authUrl}/signup`, user)
         dispatch({ type: 'auth/signupResponse', payload: response })
     }
@@ -70,15 +67,15 @@ export function signup(user: User) {
 // }
 
 export function login(user: User) {
-    return async function loginThunk(dispatch, getState) {
+    return async function loginThunk(dispatch) {
         const response = await axios.post(`${authUrl}/login`, user)
         dispatch({ type: 'auth/loginResponse', payload: response })
     }
 }
 
 export function logout(token:string) {
-    const headers = getAuthHeaders("kinvey", token)
-    return async function loginThunk(dispatch, getState) {
+    const headers = getAuthHeaders(token)
+    return async function loginThunk(dispatch) {
         const response = await axios.post(`${authUrl}/_logout`, user, headers)
         dispatch({ type: 'auth/logoutResponse', payload: response })
     }

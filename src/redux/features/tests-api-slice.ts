@@ -32,7 +32,7 @@ export default function testsReducer(state = initialState, action) {
 
 const testsUrl = `${import.meta.env.VITE_SERVER_URL}/api/tests/`;
 // Thunk function
-export async function getTests(dispatch, getState) {
+export async function getTests(dispatch) {
     //const token = getState().auth.token
     //const headers = getAuthHeaders("kinvey", token)
     const response = await axios.get(testsUrl)
@@ -43,7 +43,7 @@ export function postTest(test) {
     
     return async function postTestThunk(dispatch, getState) {
         const token = getState().auth.token
-        const headers = getAuthHeaders("kinvey", token)
+        const headers = getAuthHeaders(token)
         const response = await axios.post(testsUrl, test, headers)
         dispatch({ type: 'tests/postTestResponse', payload: response })
     }

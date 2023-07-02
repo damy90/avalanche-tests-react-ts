@@ -2,13 +2,11 @@ import { Navigate, useNavigate } from "react-router-dom"
 import { StyledButton } from "../styles/common/Button.styled"
 import { StyledForm } from "../styles/common/Form.styled"
 import { StyledInput } from "../styles/common/Input.styled"
-import { useAuth } from "../hooks/useAuth"
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import Map from '../common/Map';
 import { useState } from "react"
-import { useTestsList } from "../hooks/useTestsList"
 import { TestDetails } from "../types/reports"
 import { useAppSelector } from "../redux/hooks"
 import { useDispatch } from "react-redux"
@@ -33,7 +31,7 @@ function SubmitReport() {
             .required('Danger level name is mandatory')
     })
     const formOptions = { resolver: yupResolver(formSchema) }
-    const { register, handleSubmit, reset, formState } = useForm(formOptions)
+    const { register, handleSubmit, formState } = useForm(formOptions)
     const { errors } = formState
 
     if(!roles?.includes('Registered')) return <Navigate to="/"/>

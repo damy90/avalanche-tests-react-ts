@@ -1,16 +1,12 @@
-import { Navigate, Outlet } from "react-router-dom"
-import { useAuth } from "../../hooks/useAuth"
+import { Outlet } from "react-router-dom"
 import NavBar from "../../common/NavBar"
 import { useEffect } from "react"
 //import { useLoginUserMutation } from "../../redux/features/auth/authApiSlice";
 import { useAppSelector } from "../../redux/hooks";
-import { login } from "../../redux/features/auth/authApiSlice";
-import { useDispatch } from "react-redux";
 
 export function RootLayout() {
   //const { login, user } = useAuth()
   const user = useAppSelector((state) => state.auth.user);
-  const dispatch = useDispatch()
 
   useEffect(function () {
     // TODO: check if logged in

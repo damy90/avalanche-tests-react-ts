@@ -4,7 +4,7 @@ import { DangerRange } from "../src/types/reports";
 const icons:L.Icon[] = []
 for(let i = 1; i <=5; i++) {
     const icon = L.icon({
-        iconUrl: `/src/assets/images/${i}.png`,
+        iconUrl: `/images/${i}.png`,
         //shadowUrl: 'leaf-shadow.png',
     
         //iconSize:     [38, 95], // size of the icon

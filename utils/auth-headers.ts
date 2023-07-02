@@ -1,4 +1,4 @@
-export const getAuthHeaders = (type: string, authToken?: string | null)=> {
+export const getAuthHeaders = (authToken?: string | null)=> {
     // const authHeader:string = type === 'basic'
     // ?  'Basic ' + btoa(import.meta.env.VITE_APP_KEY + ':' + import.meta.env.VITE_APP_SECRET)
     // :  'Kinvey ' + authToken;

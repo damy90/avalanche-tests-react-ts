@@ -1,12 +1,10 @@
 import L, { LatLng } from "leaflet";
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import {StyledMap} from '../styles/common/Map.styled.jsx';
-import { useTestsList } from "../hooks/useTestsList.js";
 import getDangerMarker from "../../utils/custom-marker.js";
 import { MapProps } from "../types/reports.js";
-import { useAuth } from "../hooks/useAuth.js";
 //import { useFetchTestsQuery } from "../redux/features/tests-api-slice.js";
-import { useAppDispatch, useAppSelector } from "../redux/hooks.js";
+import { useAppSelector } from "../redux/hooks.js";
 import { useDispatch } from 'react-redux'
 import { getTests } from "../redux/features/tests-api-slice.js";
 //import { useLoginMutation } from "../redux/features/auth/authApiSlice.js";
@@ -15,7 +13,6 @@ let map: L.Map;
  
 function Map(props:MapProps) {
     const {className, setMyPosition} = {...props};
-    const token = useAppSelector((state) => state.auth.token);
     const mapRef = useRef<HTMLDivElement>(null);
     const marker: L.Marker = L.marker({lat:0, lng:0}, { draggable: true });
     const dispatch = useDispatch()

@@ -8,7 +8,6 @@ import { getTests } from "../redux/features/tests-api-slice";
 
 function MyReports(){
     //const { tests } = useTestsList()
-    const token = useAppSelector((state) => state.auth.token);
     //const { data = [], isFetching } = useFetchTestsQuery(token)
     const dispatch = useDispatch()
     dispatch(getTests)
