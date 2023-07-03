@@ -18,16 +18,17 @@ type RegisterInput = {
 
 type LoginResponse = {
     username: string;
-    _kmd: { authtoken: string };
+    token: string;
+    roles: string[];
 }
 
 const ROLES = [
     {
-        id: 'f86b1061-de69-4c36-871f-31932b0ad239',
+        id: '649c0554c7abbe38a8b25ee2',
         name: 'Admin',
         paths: []
     }, {
-        id: 'ed7aedf9-2941-458b-9460-d9ecdaefe4da',
+        id: '649c0554c7abbe38a8b25ee1',
         name: 'Registered',
         paths: ['/submit-report']
     }
@@ -36,13 +37,13 @@ const ROLES = [
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${import.meta.env.VITE_SERVER_URL}/user/${import.meta.env.VITE_APP_KEY}`,
+        baseUrl: `${import.meta.env.VITE_SERVER_URL}/api/auth`,
     }),
     endpoints: (builder) => ({
         registerUser: builder.mutation<IGenericResponse, RegisterInput>({
             query(data) {
                 return {
-                    url: '',
+                    url: 'signup',
                     method: 'POST',
                     body: data,
                 };
@@ -54,14 +55,19 @@ export const authApi = createApi({
                     url: 'login',
                     method: 'POST',
                     body: data,
-                    credentials: 'include',
+                    //credentials: 'include',
                 };
             },
             async onQueryStarted(args, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    dispatch(setUser({ user: data.username, token: data._kmd.authtoken }));
-                    await dispatch(authApi.endpoints.getMe.initiate(data._kmd.authtoken));
+                    let roles:string[] = [];
+                    if (data.roles)
+                        roles = data.roles.map((roleId: string) => {
+                            return ROLES.find((r) => roleId === r.id)?.name
+                        });
+                    dispatch(setUser({ user: data.username, token: data.token }));
+                    dispatch(setRoles(roles));
                 } catch (error) { }
             },
         }),
@@ -71,31 +77,31 @@ export const authApi = createApi({
                     url: '_logout',
                     method: 'POST',
                     body: data,
-                    credentials: 'include',
+                    //credentials: 'include',
                 };
             },
         }),
 
-        getMe: builder.query<string[], string>({
-            query(token) {
-                return {
-                    url: `/_me`,
-                    headers: getAuthHeaders('kinvey', token).headers,
-                };
-            },
-            transformResponse: (data: any) => {
-                if (data._kmd.roles)
-                    return data._kmd.roles.map((role: Role) => {
-                        return ROLES.find((r) => role.roleId === r.id)?.name
-                    })
-            },
-            async onQueryStarted(args, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    dispatch(setRoles(data));
-                } catch (error) { }
-            },
-        }),
+        // getMe: builder.query<string[], string>({
+        //     query(token) {
+        //         return {
+        //             url: `/_me`,
+        //             headers: getAuthHeaders('kinvey', token).headers,
+        //         };
+        //     },
+        //     transformResponse: (data: any) => {
+        //         if (data._kmd.roles)
+        //             return data._kmd.roles.map((role: Role) => {
+        //                 return ROLES.find((r) => role.roleId === r.id)?.name
+        //             })
+        //     },
+        //     async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        //         try {
+        //             const { data } = await queryFulfilled;
+        //             dispatch(setRoles(data));
+        //         } catch (error) { }
+        //     },
+        // }),
     }),
 });
 
@@ -103,6 +109,6 @@ export const {
     useLoginUserMutation,
     useRegisterUserMutation,
     useLogoutUserMutation,
-    useGetMeQuery,
+    //useGetMeQuery,
 } = authApi;
 

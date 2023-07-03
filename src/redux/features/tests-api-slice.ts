@@ -6,25 +6,24 @@ export const testsApiSlice = createApi({
     reducerPath: 'testsApi',
     tagTypes: ['Tests'],
     baseQuery: fetchBaseQuery({
-        baseUrl: `${import.meta.env.VITE_SERVER_URL}/appdata/${import.meta.env.VITE_APP_KEY}`,
+        baseUrl: `${import.meta.env.VITE_SERVER_URL}/api/tests/`,
     }),
     endpoints(builder) {
         return {
             fetchTests: builder.query<TestDetails[], string | null>({
-                query(token) {
+                query() {
                     return {
-                        url: `/avalanche-tests/`,
-                        headers: getAuthHeaders('kinvey', token).headers,
+                        url: ``
                     };
                 },
             },),
             postTest: builder.mutation<TestDetails,{payload:Partial<TestDetails>, token:string}>({
                 query: ({payload, token}) => ({
-                    url: `/avalanche-tests/`,
+                    url: ``,
                     method: 'POST',
                     body: payload,
-                    headers: getAuthHeaders('kinvey', token).headers,
-                    credentials: 'include',
+                    headers: getAuthHeaders(token).headers,
+                    //credentials: 'include',
                 }),
                 invalidatesTags: [{ type: 'Tests', id: 'LIST' }],
             }),
