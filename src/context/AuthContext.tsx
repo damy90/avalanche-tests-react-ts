@@ -11,11 +11,11 @@ import { AuthContext, AuthProviderProps, Role, User } from "../types/authorizati
 
 const ROLES = [
     {
-        id: 'f86b1061-de69-4c36-871f-31932b0ad239',
+        id: '649c0554c7abbe38a8b25ee2',
         name:'Admin',
         paths: []
     }, {
-        id: 'ed7aedf9-2941-458b-9460-d9ecdaefe4da',
+        id: '649c0554c7abbe38a8b25ee1',
         name: 'Registered',
         paths: ['/submit-report']
     }
@@ -37,80 +37,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const signup = useMutation({
         mutationFn: (user: User) => {
-            return axios.post(`${import.meta.env.VITE_SERVER_URL}/user/${import.meta.env.VITE_APP_KEY}`, user, basicAuth)
-                .then(res => {
-                    setUser(res.data.username)
-                    setToken(res.data._kmd.authtoken)
-                    return res.data
-                })
-                .then(data => {
-                    const headers = getAuthHeaders("kinvey", data._kmd.authtoken)
-                    return axios.get(`${import.meta.env.VITE_SERVER_URL}/user/${import.meta.env.VITE_APP_KEY}/_me`, headers)
-                })
-                .then(res => {
-                    return res.data
-                })
+            return axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/signup`, user)
         },
-        onSuccess(data) {
-            if(data._kmd.roles) {
-                // TODO: role response type
-                const roleIds = data._kmd.roles.map((role:Role)=>{
-                    return role.roleId
-                })
-                setUserRoles(roleIds || [])
-            }
-            
+        onSuccess() {
             return <Navigate to="/" />
-
         },
     })
 
     const login = useMutation({
         mutationFn: (user: User) => {
             return axios
-                .post(`${import.meta.env.VITE_SERVER_URL}/user/${import.meta.env.VITE_APP_KEY}/login`, user, basicAuth)
+                .post(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`, user)
                 .then(res => {
-                    console.log("************ LOGGED IN")
                     setUser(res.data.username)
-                    setToken(res.data._kmd.authtoken)
+                    setToken(res.data.token)
+                    setUserRoles(res.data.roles || [])
                     
                     return res.data
                 })
-                .then(data => {
-                    const headers = getAuthHeaders("kinvey", data._kmd.authtoken)
-                    return axios.get(`${import.meta.env.VITE_SERVER_URL}/user/${import.meta.env.VITE_APP_KEY}/_me`, headers)
-                })
-                .then(res => {
-                    return res.data
-                })
         },
-        onSuccess(data) {
-            if(data._kmd.roles) {
-                // TODO: role response type
-                const roleIds = data._kmd.roles.map((role:Role)=>{
-                    return role.roleId
-                })
-                setUserRoles(roleIds || [])
-            }
-            
+        onSuccess() {
             return <Navigate to="/" />
         },
     })
 
     const logout = useMutation({
         mutationFn: () => {
-            const headers = getAuthHeaders("kinvey", token)
-            return axios.post(`${import.meta.env.VITE_SERVER_URL}/user/${import.meta.env.VITE_APP_KEY}/_logout`, undefined, headers)
+            return axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/login/_logout`, undefined)
         },
         onSuccess() {
             setUser(undefined)
             setToken(undefined)
             setUserRoles([])
-            
-            login.mutate({
-                username: 'Anonymous',
-                password: 'anonymous'
-            })
+            return <Navigate to="/" />
         },
         onError() {
             setUser(undefined)

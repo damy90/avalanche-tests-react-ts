@@ -4,18 +4,7 @@ import NavBar from "../../common/NavBar"
 import { useEffect } from "react"
 
 export function RootLayout() {
-  const { login, user } = useAuth()
-
-  useEffect(function () {
-    // TODO: check if logged in
-    if(!user) {
-      login.mutate({
-        username: 'Anonymous',
-        password: 'anonymous'
-      })
-    }
-    
-  }, [])
+  const { user } = useAuth()
   
   //if (user == null) return <Navigate to="/login" />
 
